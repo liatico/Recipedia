@@ -1,0 +1,648 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/liatico/recipes/1.0.0
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: Simple Inventory API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: auth
+    description: all authentication related routs
+  - name: user
+    description: user's personal info
+  - name: recipes
+    description: all recipes related info
+paths:
+  /login:
+    post:
+      tags:
+        - auth
+      description: a JASON object with user's info - username and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username: 
+                  type: string
+                  minLength: 3
+                  maxLength: 8
+                  description: letters only
+                password:
+                  type: string
+                  minLength: 5
+                  maxLength: 10
+                  description: letters with atleast one number and one special char
+              example:
+                username: "liat"
+                password: "a12#45"
+      responses:
+        '200':
+          description: user authenticated successfully
+            
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+        '401':
+          description: Invalid number of fields
+        '402':
+          description: Invalid username or password
+  
+  /loguot:
+    post:
+      tags: 
+        - auth
+      description: logs user out 
+      security: 
+        - cookieAuth: []
+      
+      responses:
+        '200':
+          description: logged out successesfuly
+
+  /register:
+    post:
+      tags:
+        - auth
+      summary: Registration
+      description: Registration to the system's services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistration"
+      responses:
+        '200':
+          description: Registration Succeed
+        '401':
+          description: Invalid number of arguments
+        '402':
+          description: Username or Email already exists
+        '403':
+          description: Passwords are not the same
+  
+  /about:
+    get:
+      summary: About the authors
+      description: General information if the authors
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authors:
+                    type: string
+                  content:
+                    type: string
+          
+  /recipes/fullspoon/{recipeID}:
+    get:
+      tags:
+        - recipes
+      summary: Get recipe's full data
+      description: Get recipe's full data
+      parameters:
+        - name: recipeID
+          in: path
+          required: true
+          description: The recipe's ID
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: Recipe's full data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpoonRecipeFullData'
+
+        '404':
+          description: Recipe not found
+       
+  /recipes/fullpersonal/{recipeID}:
+    get:
+      tags:
+        - recipes
+      summary: Get personal recipe's full data
+      description: Get personal recipe's full data
+      parameters:
+        - name: recipeID
+          in: path
+          required: true
+          description: The recipe's ID
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: Personal recipe's full data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpoonRecipeFullData'
+
+        '404':
+          description: Recipe not found
+        '405':
+          description: Session expired, please login to continue
+  
+  /recipes/fullfamily/{recipeID}:
+    get:
+      tags:
+        - recipes
+      summary: Get family recipe's full data
+      description: Get family recipe's full data
+      parameters:
+        - name: recipeID
+          in: path
+          required: true
+          description: The recipe's ID
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: family recipe's full data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyRecipeFullData'
+        '404':
+          description: Recipe not found
+        '405':
+          description: Session expired, please login to continue
+          
+  /recipes/search/query/{searchQuery}/amount/{num}:
+    get:
+      tags:
+        - recipes
+      description: search in spoonacular API
+      parameters:
+        - in: path
+          name: searchQuery
+          required: true
+          schema:
+            type: string
+          description: search query for API
+          
+        - in: path
+          name: num
+          required: true
+          schema:
+            type: integer
+            enum: [5, 10, 15]
+            default: 5
+          description: search query for API
+        
+        - in: query
+          name: cuisine
+          schema:
+            $ref: '#/components/schemas/Cuisine'
+        - in: query
+          name: diet
+          schema:
+            $ref: '#/components/schemas/Diet'
+        - in: query
+          name: intolerances
+          schema:
+            $ref: '#/components/schemas/Intolerances'
+      
+      responses:
+        '200':
+          description: retrived recipes successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipePreview'
+        '401':
+          description: Invalid arguments
+          
+  /recipes/randomRecipes:
+    post:
+      tags:
+        - recipes
+      summary: Get random recipes
+      description: Get 3 random recipes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecipePreview"
+                minItems: 3
+                maxItems: 3
+                
+  /recipes/myFamilyRecipes:
+    post:
+      tags:
+        - recipes
+      summary: Get user's family recipes
+      description: Get user's family recipes preview
+      
+      responses:
+        '200':
+          description: User's family recipes under Family Recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        '404':
+          description: No recipes found under Family Recipes
+        '405':
+          description: Session expired, please login to continue
+          
+  /recipes/myPersonalRecipes:
+    post:
+      tags:
+        - recipes
+      summary: Get user's personal recipes
+      description: Get user's personal recipes preview
+      
+      responses:
+        '200':
+          description: User's personal recipes under personal Recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        '404':
+          description: No recipes found under personal Recipes
+        '405':
+          description: Session expired, please login to continue
+                    
+  /user/favoriteRecipes:
+    post:
+      tags:
+        - user
+        - recipes
+      summary: Get user's favorite recipes
+      description: Get user's favorite recipes preview
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User's favorite recipes previews
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        '404':
+          description: No favorite recipes found
+        '405':
+          description: Session expired, please login to continue
+          
+  /user/lastWatchedRecipes:
+    post:
+      tags:
+        - user
+        - recipes
+      summary: Get user's last watched recipes
+      description: Get user's 3 last watched recipes preview
+      security: 
+        - cookieAuth: []
+        
+      responses:
+        '200':
+          description: User's 3 last watched recipes under Last Watched Recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+                minItems: 3
+                maxItems: 3
+        '404':
+          description: No recently watched recipes found
+        '405':
+          description: Session expired, please login to continue  
+          
+  /user/addRecipeToNextMeal/{id}:
+     get:
+      tags:
+        - user
+        - recipes
+      summary: Add recipe to next meal
+      description: Add recipe ID received to the next meal
+      security: 
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 27
+      
+      responses:
+        '200':
+          description: Recipe added to next meal successfully
+        '404':
+          description: Invalid recipe ID
+        '405':
+          description: Session expired, please login to continue
+          
+  /user/removeRecipeFromNextMeal/{id}:
+    get:
+      tags:
+        - recipes
+        - user
+      summary: Remove recipe from next meal
+      description: Remove recipe ID received from the next meal
+      security: 
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 27
+      responses:
+        '200':
+          description: Recipe removed from next meal successfully
+        '404':
+          description: Invalid recipe ID
+        '405':
+          description: Session expired, please login to continue
+          
+  /user/startPrepareRecipe/{id}:
+    get:
+      tags:
+        - user
+      summary: Start prepare recipe
+      description: Start prepare recipe by the ID received
+      security: 
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 27
+      responses:
+        '200':
+          description: Started preparing recipe
+        '404':
+          description: Invalid recipe ID
+        '405':
+          description: Session expired, please login to continue
+          
+  /user/removeAllMealRecipes:
+    post:
+      tags:
+        - recipes
+        - user
+      summary: Remove all recipes from next meal
+      description: Remove all recipes from the next meal
+      security: 
+        - cookieAuth: []
+
+      responses:
+        '200':
+          description: All recipe removed from next meal successfully
+        '404':
+          description: No recipes found in the next meal
+        '405':
+          description: Session expired, please login to continue
+          
+ 
+            
+components:
+  schemas:
+    Cuisine:
+      type: string
+      enum:
+        - African
+        - American
+        - British
+        - Cajun
+        - Caribbean
+        - Chinese
+        - Eastern European
+        - European
+        - French
+        - German
+        - Greek
+        - Indian
+        - Irish
+        - Italian
+        - Japanese
+        - Jewish
+        - Korean
+        - Latin American
+        - Mediterranean
+        - Mexican
+        - Middle Eastern
+        - Nordic
+        - Southern
+        - Spanish
+        - Thai
+        - Vietnamese
+        
+    Diet:
+      type: string
+      enum:
+        - Gluten Free
+        - Ketogenic
+        - Vegetarian
+        - Lacto-Vegetarian
+        - Ovo-Vegetarian
+        - Vegan
+        - Pescetarian
+        - Paleo
+        - Primal
+        - Whole30
+        
+    Intolerances:
+      type: string
+      enum:
+        - Dairy
+        - Egg
+        - Gluten
+        - Grain
+        - Peanut
+        - Seafood
+        - Sesame
+        - Shellfish
+        - Soy
+        - Sulfite
+        - Tree Nut
+        - Wheat
+    
+            
+    RecipePreview:
+      type: object
+      properties:
+        id: 
+          type: integer
+          description: recipe's uniqe id for further use and actions on recipes
+          example: 541
+        title:
+          type: string
+          example: "Vanille cake"
+        picture:
+          type: string
+          example: "https://urlexample.com/picture.jpg"
+        PreparationTime:
+          type: integer
+          example: 60
+        Popularity:
+          type: integer
+          example: 63
+        isVegan:
+          type: boolean
+          example: true
+        isVegiterian:
+          type: boolean
+          example: true
+        isGlutenFree:
+          type: boolean
+          example: false
+    
+    FamilyRecipeFullData:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Vanille cake"
+        picture:
+          type: string
+          example: "https://urlexample.com/picture.jpg"
+        PreparationTime:
+          type: integer
+          example: 60
+        Popularity:
+          type: integer
+          example: 63
+        isVegan:
+          type: boolean
+          example: true
+        isGlutenFree:
+          type: boolean
+          example: false
+        isViewedBefore:
+          type: boolean
+          example: true
+        isFavorite:
+          type: boolean
+          example: false
+        ingredients:
+          type: array
+          items:
+            type: string 
+            example: "5 cups of sugar, 5 buckets of gluten"
+        instructions:
+          type: array
+          items:
+            type: string 
+            example: "Mix the sugar and gluten, Put in the fridge for 24 hours, Eat"
+        numOfPortions:
+          type: integer
+          example: 1
+        recipeOwner:
+          type: string
+          example: "grendma Lea"
+        whenIsServed:
+          type: string
+          example: "friday night"
+
+    SpoonRecipeFullData:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Vanille cake"
+        picture:
+          type: string
+          example: "https://urlexample.com/picture.jpg"
+        PreparationTime:
+          type: integer
+          example: 60
+        Popularity:
+          type: integer
+          example: 63
+        isVegan:
+          type: boolean
+          example: true
+        isGlutenFree:
+          type: boolean
+          example: false
+        isViewedBefore:
+          type: boolean
+          example: true
+        isFavorite:
+          type: boolean
+          example: false
+        ingredients:
+          type: array
+          items:
+            type: string 
+            example: "5 cups of sugar, 5 buckets of gluten"
+        instructions:
+          type: array
+          items:
+            type: string 
+            example: "Mix the sugar and gluten, Put in the fridge for 24 hours, Eat"
+        numOfPortions:
+          type: integer
+          example: 1
+          
+    UserRegistration:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: "username"
+        firstName:
+          type: string
+          example: "user"
+        lastName:
+          type: string
+          example: "lastName"
+        country:
+          type: string
+          example: "Israel"
+        password:
+          type: string
+          example: "pass1234"
+        passwordConfirmation:
+          type: string
+          example: "pass1234"
+        email:
+          type: string
+          example: "email@gmail.com"
+        profilePictureURL:
+          type: string
+          example: "https://urlexample.com/picture.jpg"    
+  
+  
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session

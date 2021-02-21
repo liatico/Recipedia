@@ -1,0 +1,174 @@
+h2 {
+    text-align: center;
+    font-weight: bold;
+    color: rgb(120, 161, 161);
+    text-shadow: rgb(82, 81, 81) 2px 2px 2px;    
+}
+
+hr {
+    border: 0;
+    height: 0;
+    box-shadow: 0 0 5px 0px rgb(107, 136, 148);
+}
+hr:after {
+    content: "\00a0";
+}
+
+.container-outer
+{
+    box-shadow: 2px 2px 5px 5px grey;
+}
+.container-row
+{
+    display: table-row;
+}
+
+.container-cell
+{
+    padding: 10px;
+    vertical-align: top;
+    display: table-cell;
+}
+
+.imageClass
+{
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+}
+
+.imageClass:hover{
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+p
+{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.t
+{
+    font-weight: bold;
+    color:green;
+}
+
+.f
+{
+    font-weight: bold;
+    color:red;
+}
+
+.recipeTitle
+{
+    font-size:20px;
+    font-weight:bold;
+    color:rgb(97, 73, 124);
+    text-align:center;
+    text-decoration:underline;
+    cursor: pointer;
+}
+
+.favoriteButton
+{
+    cursor:pointer;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+input[type=text]:focus, input[type=password]:focus{
+    border: 1px solid blue;
+    background-color: lightblue;
+    transition: 0.3s;
+
+}
+
+input[type=text], input[type=password] , select{
+    box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border: 1px solid #C2C2C2;
+	box-shadow: 1px 1px 4px #EBEBEB;
+	-moz-box-shadow: 1px 1px 4px #EBEBEB;
+	-webkit-box-shadow: 1px 1px 4px #EBEBEB;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	outline: none;
+}
+button{
+    color:black;
+    background: #ededed;
+    border: 2px solid rgb(71, 92, 90);
+    box-shadow: 4px 4px 4px 4px lightsteelblue;
+    padding: 10px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+button:hover{
+    color: white;
+    background: #455d6d;
+    border: 2px solid rgb(156, 184, 181);
+    box-shadow: 4px 4px 4px 4px lightsteelblue;
+    padding: 10px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.userNameTitle{
+    font-size:14px;
+    background-color:transparent;
+    color: #0A8694;
+}
+
+.userNameTitle:hover{
+    font-size:14px;
+    background-color:transparent;
+    color: white;
+
+    transition: 0.3s;
+
+}
+
+.recipedia
+{  font-family: Georgia;
+
+    color:#034F67;
+    font-size:28px;
+    vertical-align:middle;
+
+
+}
+
+.recipedia:hover
+{
+    font-family: Georgia;
+
+    color:white;
+    font-size:28px;
+    vertical-align:middle;
+    text-decoration: none;
+
+    transition: 0.3s;
+
+
+}
+
+menuItem{
+    transition: 0.3s;
+    color:red;
+}

@@ -7,8 +7,8 @@ based on spoonacular api calls
 
 
 Authors:
-  Liat Cohen
-  Adir Biran
+  Liat Cohen  liatico77@gmail.com
+  Adir Biran  adir.biran@gmail.com
   
   
 07/2020
